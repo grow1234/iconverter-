@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>iconverter — Image Compressor & PDF Optimizer</title>
+  <meta name="description" content="Compress images (JPG/PNG/WebP) and optimize PDFs in the browser. Choose compression level and download the results." />
+  <link rel="stylesheet" href="../css/styles.css">
+  <!-- AdSense skeleton -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          data-ad-client="ca-pub-REPLACE_WITH_YOUR_PUB_ID" crossorigin="anonymous"></script>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.7.107/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.20.0/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <style>
+    /* local overrides for tool layout */
+    .tool-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+    .tool-card{padding:18px;border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(2,6,23,0.04)}
+    .drop-area{border:2px dashed rgba(15,23,42,0.06);padding:20px;border-radius:12px;text-align:center;cursor:pointer}
+    .drop-area.drag{border-color:var(--accent);background:linear-gradient(180deg,rgba(37,99,235,0.03),transparent)}
+    .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px}
+    .preview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+    .preview{background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.04);text-align:center}
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="../index.html"><span class="logo-mark">i</span>iconverter</a>
+      <nav class="main-nav">
+        <a href="../index.html">Home</a>
+        <a href="../index.html#tools-grid">Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="tool-header">
+      <div>
+        <h2>Image Compressor & PDF Optimizer</h2>
+        <p class="muted">Client-side compression for images and basic PDF optimization (rasterize + recompress).</p>
+      </div>
+      <div class="ad-slot" style="width:280px;height:90px">Ad Slot</div>
+    </div>
+
+    <section class="tool-card">
+      <div id="dropzone" class="drop-area" tabindex="0">
+        <strong>Drop images or PDFs here</strong>
+        <div class="muted" style="margin-top:8px">Supports JPG, PNG, WebP and PDF. Click to browse.</div>
+        <input id="fileInput" type="file" accept="image/*,application/pdf" multiple style="display:none" />
+        <div style="margin-top:12px">
+          <button id="chooseBtn" class="btn ghost" type="button">Choose Files</button>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div>
+          <label class="small">Quality</label><br/>
+          <input id="quality" type="range" min="10" max="100" value="80" />
+          <div class="small muted">Current: <span id="qualityValue">80</span></div>
+        </div>
+
+        <div>
+          <label class="small">Output format</label><br/>
+          <select id="format">
+            <option value="auto">Auto (preserve)</option>
+            <option value="jpeg">JPEG</option>
+            <option value="webp">WebP</option>
+            <option value="png">PNG</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="small"><input id="resizeToggle" type="checkbox" /> Resize if large</label><br/>
+          <select id="maxSide"><option value="4096">Max 4096px</option><option value="2048" selected>Max 2048px</option><option value="1024">Max 1024px</option></select>
+        </div>
+
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button id="processBtn" class="btn primary">Compress Selected</button>
+          <button id="downloadAllBtn" class="btn ghost" disabled>Download Selected</button>
+        </div>
+      </div>
+
+      <div class="preview-grid" id="previewGrid" aria-live="polite"></div>
+
+      <div style="margin-top:12px">
+        <label class="small">PDF quality (when optimizing PDFs)</label><br/>
+        <input id="pdfQuality" type="range" min="10" max="100" value="70" />
+        <div class="small muted">Current: <span id="pdfQualityValue">70</span></div>
+        <div style="margin-top:10px">
+          <button id="processPdfBtn" class="btn">Optimize PDF(s)</button>
+        </div>
+        <div id="pdfStatus" class="small muted" style="margin-top:8px">No PDFs processed yet.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      © 2025 iconverter
+    </div>
+  </footer>
+
+  <!-- compressor script -->
+  <script defer src="../js/compressor.js"></script>
+</body>
+</html>
