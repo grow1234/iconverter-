@@ -1,0 +1,269 @@
+Perfect ✅ I’ll regenerate the **full HTML file** with the “Choose Files” fix applied, so you can copy–paste and run it directly.
+
+Here’s the corrected code:
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OptiImage — Compress Images & Optimize PDFs</title>
+  <meta name="description" content="OptiImage: Compress JPG, PNG, WebP images and optimize PDFs directly in your browser. Fast, secure, and responsive." />
+  <meta name="keywords" content="image compressor, pdf optimizer, compress jpg, convert webp, online tool" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗜️</text></svg>">
+
+  <!-- Google AdSense (replace with your pub id) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          data-ad-client="ca-pub-REPLACE_WITH_YOUR_PUB_ID" crossorigin="anonymous"></script>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.7.107/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.20.0/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#f4f7fb; --card:#ffffff; --muted:#6b7280; --accent:#2563eb; --radius:14px;
+      font-family: "Segoe UI", Inter, system-ui, Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#eef2f7,#f9fafb);min-height:100vh;padding:24px;display:flex;justify-content:center}
+    .container{width:100%;max-width:1200px;display:grid;grid-template-columns:2fr 1fr;gap:20px}
+    header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,var(--accent),#9333ea);display:flex;justify-content:center;align-items:center;font-size:28px;color:#fff}
+    h1{margin:0;font-size:22px}
+    p.lead{margin:0;color:var(--muted);font-size:14px}
+    .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 6px 20px rgba(16,24,40,0.06)}
+    .drop{border:2px dashed #d1d5db;padding:26px;border-radius:12px;text-align:center;cursor:pointer;transition:.2s}
+    .drop.drag{border-color:var(--accent);background:#f0f7ff}
+    input[type=file]{display:none}
+    .controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:14px}
+    .range-wrap{display:flex;align-items:center;gap:10px;min-width:220px}
+    .small{font-size:13px;color:var(--muted)}
+    .grid-previews{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:14px}
+    .preview{border-radius:12px;padding:12px;background:#fafafa;display:flex;flex-direction:column;gap:10px;align-items:center;box-shadow:0 3px 8px rgba(16,24,40,0.05)}
+    .preview img{max-width:100%;border-radius:10px}
+    .meta{font-size:12px;color:var(--muted);text-align:center;word-break:break-word}
+    .row{display:flex;justify-content:space-between;align-items:center;width:100%}
+    .actions{display:flex;gap:10px;justify-content:center;margin-top:14px}
+    .btn{background:var(--accent);border:none;color:#fff;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer;transition:.2s}
+    .btn:hover{background:#1d4ed8}
+    .btn.ghost{background:#fff;border:1px solid #d1d5db;color:#374151}
+    .btn.ghost:hover{background:#f3f4f6}
+    .btn:disabled{opacity:0.6;cursor:not-allowed}
+    .sidebar{display:flex;flex-direction:column;gap:16px;position:sticky;top:20px}
+    .ad-slot{min-height:90px;display:flex;align-items:center;justify-content:center;border-radius:12px;border:1px dashed #d1d5db;color:var(--muted);padding:12px}
+    footer{grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;margin-top:10px}
+    @media (max-width:1000px){
+      .container{grid-template-columns:1fr}
+      .sidebar{position:relative}
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">OI</div>
+        <div>
+          <h1>OptiImage</h1>
+          <p class="lead">Compress images & optimize PDFs in your browser.</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn" id="zipAll">Download ZIP</button>
+        <button class="btn ghost" id="clearAll">Clear</button>
+      </div>
+    </header>
+
+    <!-- Tools -->
+    <section>
+      <div class="card">
+        <h2>Image & PDF Tool</h2>
+        <div class="drop" id="dropzone">
+          <strong>Drag & Drop files here</strong>
+          <div class="small" style="margin-top:6px">Supports JPG, PNG, WebP & PDF</div>
+          <!-- Fixed file input -->
+          <input id="fileInput" type="file" accept="image/*,application/pdf" multiple />
+          <div style="margin-top:10px">
+            <button id="selectBtn" class="btn ghost" type="button">Choose Files</button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="range-wrap">
+            <label class="small">Quality</label>
+            <input id="quality" type="range" min="10" max="100" value="80" />
+            <span id="qualityVal" class="small">80</span>
+          </div>
+          <div>
+            <label class="small">Format</label>
+            <select id="format">
+              <option value="auto">Auto</option>
+              <option value="jpeg">JPEG</option>
+              <option value="webp">WebP</option>
+              <option value="png">PNG</option>
+            </select>
+          </div>
+          <div>
+            <label class="small"><input id="resizeToggle" type="checkbox" /> Resize</label>
+            <select id="maxSide">
+              <option value="4096">Max 4096px</option>
+              <option value="2048" selected>Max 2048px</option>
+              <option value="1024">Max 1024px</option>
+            </select>
+          </div>
+          <button id="processBtn" class="btn">Process Images</button>
+        </div>
+
+        <div id="previewGrid" class="grid-previews"></div>
+
+        <div class="actions">
+          <button id="downloadSelected" class="btn ghost" disabled>Download Selected</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>PDF Options</h3>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label class="small">PDF Quality</label>
+          <input id="pdfQuality" type="range" min="10" max="100" value="70" />
+          <span id="pdfQualityVal" class="small">70</span>
+        </div>
+        <p class="small" style="margin-top:8px">Note: PDFs are rasterized and reassembled. Best for PDFs with images.</p>
+        <button id="processPdf" class="btn" style="margin-top:10px">Optimize PDFs</button>
+        <div id="pdfStatus" class="small" style="margin-top:8px">No PDFs processed yet.</div>
+      </div>
+    </section>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="card ad-slot">
+        <!-- Insert AdSense code here -->
+        Ad Slot (replace with AdSense unit)
+      </div>
+      <div class="card">
+        <h3>SEO Settings</h3>
+        <label class="small">Site Title</label>
+        <input id="siteTitle" type="text" value="OptiImage — Compress Images & Optimize PDFs" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e5e7eb" />
+        <label class="small" style="margin-top:8px">Meta Description</label>
+        <textarea id="metaDesc" rows="3" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e5e7eb">Compress images and optimize PDFs in your browser. 100% privacy.</textarea>
+      </div>
+      <div class="card ad-slot">Second Ad Slot</div>
+    </aside>
+
+    <footer>© 2025 OptiImage — Client-side only, no uploads</footer>
+  </main>
+
+<script>
+/* Helpers */
+const bytesTo = b => (b>1024*1024) ? (Math.round(b/1024/1024*100)/100)+' MB' : (Math.round(b/1024*10)/10)+' KB';
+const isImage = m => /^image\//.test(m);
+const isPdf = m => m === 'application/pdf';
+const uid = () => Math.random().toString(36).slice(2,9);
+
+/* DOM */
+const fileInput=document.getElementById('fileInput');
+const dropzone=document.getElementById('dropzone');
+const selectBtn=document.getElementById('selectBtn');
+const previewGrid=document.getElementById('previewGrid');
+const quality=document.getElementById('quality'),qualityVal=document.getElementById('qualityVal');
+const formatSel=document.getElementById('format'),resizeToggle=document.getElementById('resizeToggle'),maxSide=document.getElementById('maxSide');
+const processBtn=document.getElementById('processBtn'),downloadSelected=document.getElementById('downloadSelected'),zipAll=document.getElementById('zipAll'),clearAll=document.getElementById('clearAll');
+const pdfQuality=document.getElementById('pdfQuality'),pdfQualityVal=document.getElementById('pdfQualityVal'),processPdf=document.getElementById('processPdf'),pdfStatus=document.getElementById('pdfStatus');
+const siteTitle=document.getElementById('siteTitle'),metaDesc=document.getElementById('metaDesc');
+
+/* State */
+let items=[];
+
+/* Inputs */
+quality.oninput=()=>qualityVal.textContent=quality.value;
+pdfQuality.oninput=()=>pdfQualityVal.textContent=pdfQuality.value;
+
+selectBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', (e) => {
+  handleFiles(e.target.files);
+  e.target.value = ''; // reset for same file reselect
+});
+
+['dragenter','dragover'].forEach(ev =>
+  dropzone.addEventListener(ev, e => {e.preventDefault();dropzone.classList.add('drag');})
+);
+['dragleave','drop'].forEach(ev =>
+  dropzone.addEventListener(ev, e => {e.preventDefault();dropzone.classList.remove('drag');})
+);
+dropzone.addEventListener('drop', e => {handleFiles(e.dataTransfer.files);});
+
+function handleFiles(fileList){
+  Array.from(fileList).forEach(f=>{
+    if(!isImage(f.type)&&!isPdf(f.type))return;
+    const id=uid(),url=URL.createObjectURL(f);
+    items.push({id,file:f,type:isPdf(f.type)?'pdf':'image',selected:true,outputBlob:null,previewURL:url});
+  });
+  renderPreviews();
+}
+function renderPreviews(){
+  previewGrid.innerHTML='';
+  items.forEach(it=>{
+    const d=document.createElement('div');d.className='preview';
+    if(it.type==='image'){const img=document.createElement('img');img.src=it.previewURL;d.appendChild(img);}else{const ico=document.createElement('div');ico.style.fontSize='42px';ico.textContent='📄';d.appendChild(ico);}
+    const m=document.createElement('div');m.className='meta';m.innerHTML=`<strong>${it.file.name}</strong><br>${bytesTo(it.file.size)}`;d.appendChild(m);
+    const row=document.createElement('div');row.className='row';
+    const ch=document.createElement('input');ch.type='checkbox';ch.checked=!!it.selected;ch.onchange=()=>{it.selected=ch.checked;updateControls();};
+    const dl=document.createElement('button');dl.className='btn ghost';dl.textContent='Download';dl.disabled=!it.outputBlob;dl.onclick=()=>downloadBlob(it.outputBlob,it.file.name);
+    row.append(ch,dl);d.appendChild(row);previewGrid.appendChild(d);
+  });
+  updateControls();
+}
+function updateControls(){downloadSelected.disabled=!items.some(i=>i.selected&&i.outputBlob);}
+
+/* Image compression */
+async function compressImage(file,opts){
+  const img=await createImageBitmap(file);let w=img.width,h=img.height;
+  if(opts.maxSide&&Math.max(w,h)>opts.maxSide){const sc=opts.maxSide/Math.max(w,h);w=Math.round(w*sc);h=Math.round(h*sc);}
+  const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);
+  let mime=file.type;if(opts.format==='png')mime='image/png';else if(opts.format==='jpeg')mime='image/jpeg';else if(opts.format==='webp')mime='image/webp';
+  const blob=await new Promise(r=>c.toBlob(r,mime,opts.quality));return blob;
+}
+processBtn.onclick=async()=>{
+  const sel=items.filter(i=>i.selected&&i.type==='image');if(!sel.length)return alert('No images selected.');
+  processBtn.disabled=true;processBtn.textContent='Processing...';
+  for(const it of sel){it.outputBlob=await compressImage(it.file,{quality:quality.value/100,format:formatSel.value,maxSide:resizeToggle.checked?parseInt(maxSide.value):null});it.previewURL=URL.createObjectURL(it.outputBlob);}
+  renderPreviews();processBtn.disabled=false;processBtn.textContent='Process Images';
+  alert('Images processed!');
+};
+
+/* PDF optimize */
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.7.107/build/pdf.worker.min.js';
+async function optimizePdf(file,q,maxSide=2048){
+  const arr=await file.arrayBuffer();const doc=await pdfjsLib.getDocument({data:arr}).promise;const newPdf=await PDFLib.PDFDocument.create();
+  for(let p=1;p<=doc.numPages;p++){const page=await doc.getPage(p);const vp=page.getViewport({scale:1});const sc=Math.min(1,maxSide/Math.max(vp.width,vp.height));const rvp=page.getViewport({scale:sc});const c=document.createElement('canvas');c.width=rvp.width;c.height=rvp.height;await page.render({canvasContext:c.getContext('2d'),viewport:rvp}).promise;const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',q/100));const img=await newPdf.embedJpg(await blob.arrayBuffer());const np=newPdf.addPage([img.width,img.height]);np.drawImage(img,{x:0,y:0,width:img.width,height:img.height});}
+  return new Blob([await newPdf.save()],{type:'application/pdf'});
+}
+processPdf.onclick=async()=>{
+  const sel=items.filter(i=>i.selected&&i.type==='pdf');if(!sel.length)return alert('No PDFs selected.');
+  processPdf.disabled=true;processPdf.textContent='Optimizing...';pdfStatus.textContent='Processing PDFs...';
+  for(const it of sel){it.outputBlob=await optimizePdf(it.file,parseInt(pdfQuality.value));}
+  renderPreviews();processPdf.disabled=false;processPdf.textContent='Optimize PDFs';pdfStatus.textContent='Done.';alert('PDFs optimized!');
+};
+
+/* Download */
+function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
+downloadSelected.onclick=()=>items.filter(i=>i.selected&&i.outputBlob).forEach(i=>downloadBlob(i.outputBlob,i.file.name));
+zipAll.onclick=async()=>{const jszip=new JSZip();items.filter(i=>i.selected&&i.outputBlob).forEach(i=>jszip.file(i.file.name,i.outputBlob));const blob=await jszip.generateAsync({type:'blob'});downloadBlob(blob,'optimage.zip');};
+clearAll.onclick=()=>{items.forEach(it=>{URL.revokeObjectURL(it.previewURL);});items=[];renderPreviews();pdfStatus.textContent='No PDFs processed yet.';};
+
+/* SEO live preview */
+siteTitle.oninput=e=>document.title=e.target.value||'OptiImage';
+metaDesc.oninput=e=>{const m=document.querySelector('meta[name="description"]');if(m)m.content=e.target.value;};
+</script>
+</body>
+</html>
+```
+
+---
+
+👉 Now the **“Choose Files” button works** (file picker opens properly
